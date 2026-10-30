@@ -1,0 +1,108 @@
+# 📚 Library Management System – ABAP
+
+## 📌 Project Overview
+
+The **Library Management System** is a simple SAP ABAP project developed using Object-Oriented Programming (OOP) concepts.
+
+This project manages library books by performing operations such as displaying book details, checking book availability, issuing books, returning books, and listing all available books.
+
+The system uses a custom SAP database table `ZBOOK_MASTER` to store and manage book information.
+
+## 🎯 Features
+
+- **Display Book Details:** Displays book ID, book name, author, and current status.
+- **Check Book Availability:** Checks whether a particular book is available or already issued.
+- **Issue Book:** Issues an available book and updates its status to `ISSUED`.
+- **Return Book:** Returns an issued book and updates its status to `AVAILABLE`.
+- **View Available Books:** Displays all books currently available in the library.
+
+## 🛠️ Technologies Used
+
+- SAP ABAP
+- Object-Oriented ABAP (OOP)
+- ABAP Classes and Methods
+- Internal Tables
+- Open SQL
+- Database Operations (SELECT, UPDATE)
+- COMMIT WORK
+
+## 🗄️ Database Table
+
+**Table Name:** `ZBOOK_MASTER`
+
+| Field Name | Description |
+|---|---|
+| BOOK_ID | Unique Book ID |
+| BOOK_NAME | Name of the Book |
+| AUTHOR | Author of the Book |
+| STATUS | Availability Status |
+
+### Book Status
+
+- `AVAILABLE` – Book is available for issuing.
+- `ISSUED` – Book has already been issued.
+
+## 🏗️ Program Structure
+
+**Program Name:** `ZLIBRARY_MANAGEMENT_SYSTEM`
+
+**Class Name:** `LCL_BOOK`
+
+### Methods Implemented
+
+| Method | Purpose |
+|---|---|
+| CONSTRUCTOR | Fetches book details using Book ID |
+| DISPLAY_BOOK | Displays book information |
+| CHECK_AVAILABILITY | Checks book availability |
+| ISSUE_BOOK | Issues an available book |
+| RETURN_BOOK | Returns an issued book |
+| GET_AVAILABLE_BOOKS | Displays all available books |
+
+## ⚙️ How It Works
+
+1. Enter the Book ID using the selection-screen parameter.
+2. The constructor fetches the corresponding book details from `ZBOOK_MASTER`.
+3. The program displays the book information.
+4. The availability of the book is checked.
+5. If the book is available, the issue operation updates its status to `ISSUED`.
+6. The return operation changes the status back to `AVAILABLE`.
+7. The program can also display all available books.
+
+## ▶️ How to Execute
+
+1. Create the custom database table `ZBOOK_MASTER` in SAP.
+2. Maintain the required book records in the table.
+3. Create an executable ABAP report named `ZLIBRARY_MANAGEMENT_SYSTEM`.
+4. Copy the ABAP source code into the report.
+5. Activate the program.
+6. Execute the report using transaction code `SA38` or `SE38`.
+7. Enter a valid Book ID and execute.
+
+## 📖 OOP Concepts Used
+
+- Classes and Objects
+- Constructor
+- Instance Attributes
+- Instance Methods
+- Encapsulation through class-based implementation
+
+## 🚀 Future Enhancements
+
+- Add member details and member registration.
+- Maintain issue and return dates.
+- Add a fine calculation feature for late returns.
+- Implement book search by title or author.
+- Add proper exception handling and transaction management.
+- Introduce a separate class for managing library operations.
+
+## 👨‍💻 Author
+
+Developed as a beginner-level SAP ABAP Object-Oriented Programming project to understand real-time database operations and class-based programming.
+
+---
+
+**Project:** Library Management System  
+**Language:** SAP ABAP  
+**Type:** Console-Based ABAP Report  
+**Focus:** Object-Oriented Programming and Open SQL
