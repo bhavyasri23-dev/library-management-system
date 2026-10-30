@@ -1,0 +1,200 @@
+REPORT zlibrary_management_system.
+
+PARAMETERS:
+  p_bookid TYPE zbook_master-book_id.
+
+CLASS lcl_book DEFINITION.
+
+  PUBLIC SECTION.
+
+    DATA:
+      book_id   TYPE zbook_master-book_id,
+      book_name TYPE zbook_master-book_name,
+      author    TYPE zbook_master-author,
+      status    TYPE zbook_master-status.
+
+    METHODS:
+      constructor
+        IMPORTING
+          iv_book_id TYPE zbook_master-book_id,
+
+      display_book,
+      check_availability,
+      issue_book,
+      return_book,
+      get_available_books.
+
+ENDCLASS.
+
+CLASS lcl_book IMPLEMENTATION.
+
+  METHOD constructor.
+
+    SELECT SINGLE *
+      FROM zbook_master
+      INTO @DATA(ls_book)
+      WHERE book_id = @iv_book_id.
+
+    IF sy-subrc = 0.
+
+      book_id   = ls_book-book_id.
+      book_name = ls_book-book_name.
+      author    = ls_book-author.
+      status    = ls_book-status.
+
+    ELSE.
+
+      WRITE: / 'Book Not Found'.
+
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD display_book.
+
+    IF book_id IS INITIAL.
+      RETURN.
+    ENDIF.
+
+    WRITE: / '-----------------------------'.
+    WRITE: / 'Book ID    :', book_id.
+    WRITE: / 'Book Name  :', book_name.
+    WRITE: / 'Author     :', author.
+    WRITE: / 'Status     :', status.
+    WRITE: / '-----------------------------'.
+
+  ENDMETHOD.
+
+
+  METHOD check_availability.
+
+    SELECT SINGLE status
+      INTO @DATA(lv_status)
+      FROM zbook_master
+      WHERE book_id = @book_id.
+
+    IF sy-subrc <> 0.
+
+      WRITE: / 'Book Not Found'.
+
+    ELSEIF lv_status = 'AVAILABLE'.
+
+      WRITE: / 'Book Is Available'.
+
+    ELSEIF lv_status = 'ISSUED'.
+
+      WRITE: / 'Book Is Not Available'.
+
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD issue_book.
+
+    SELECT SINGLE status
+      INTO @DATA(lv_status)
+      FROM zbook_master
+      WHERE book_id = @book_id.
+
+    IF sy-subrc <> 0.
+
+      WRITE: / 'Book Not Found'.
+      RETURN.
+
+    ENDIF.
+
+    IF lv_status = 'AVAILABLE'.
+
+      UPDATE zbook_master
+        SET status = 'ISSUED'
+        WHERE book_id = @book_id.
+
+      COMMIT WORK.
+
+      WRITE: / 'Book Issued Successfully'.
+
+      status = 'ISSUED'.
+
+    ELSE.
+
+      WRITE: / 'Book Already Issued'.
+
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD return_book.
+
+    SELECT SINGLE status
+      INTO @DATA(lv_status)
+      FROM zbook_master
+      WHERE book_id = @book_id.
+
+    IF sy-subrc <> 0.
+
+      WRITE: / 'Book Not Found'.
+      RETURN.
+
+    ENDIF.
+
+    IF lv_status = 'ISSUED'.
+
+      UPDATE zbook_master
+        SET status = 'AVAILABLE'
+        WHERE book_id = @book_id.
+
+      COMMIT WORK.
+
+      WRITE: / 'Book Returned Successfully'.
+
+      status = 'Available'.
+
+    ELSE.
+
+      WRITE: / 'Book Already Available'.
+
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD get_available_books.
+    SELECT *
+  FROM zbook_master
+  INTO TABLE @DATA(lt_books)
+  WHERE status = 'AVAILABLE'.
+
+LOOP AT lt_books INTO DATA(ls_book).
+
+  WRITE: /
+    ls_book-book_id,
+    ls_book-book_name,
+    ls_book-author,
+    ls_book-status.
+
+ENDLOOP.
+    ENDMETHOD.
+
+ENDCLASS.
+
+START-OF-SELECTION.
+
+  DATA lo_book TYPE REF TO lcl_book.
+
+  CREATE OBJECT lo_book
+    EXPORTING
+      iv_book_id = p_bookid.
+
+lo_book->display_book( ).
+
+  WRITE: /.
+lo_book->check_availability( ).
+
+
+
+lo_book->issue_book( ).
+
+* lo_book->return_book( ).
+*lo_book->get_available_books( ).
